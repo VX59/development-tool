@@ -1,0 +1,29 @@
+{% extends "devtrack/base.html" %}
+{% block content %}
+    <h1>{{ object.feature_parent }} Issue</h1>
+    <article class="media content-section">
+        <div class="media-body">
+        <div class="article-metadata">
+            <small class="text-muted">{{ object.bug_date_created|date:"F d, Y"}}</small>
+            <h4 class="float-right mt-2 mb-1 mr-4">
+                {% if object.severity == 1 %}
+                <span class="badge badge-danger">SEVERE</span>
+                {% elif object.severity == 2 %}
+                <span class="badge badge-warning">MODERATE</span>
+                {% elif object.severity == 3 %}
+                <span class="badge badge-secondary">WARNING</span>
+                {% endif %}
+            </h4>
+            <div>
+                <a class="btn btn-outline-success btn-sm mt-1 mb-1" href="#">close issue</a>
+            </div>
+        </div>
+        <h2 class="article-title">{{ object.bug_name }}</h2>
+        </div>
+    </article>
+    <h4> Terminal Error </h4>
+
+    <article class="media content-section">
+        <p class="article-content">{{ object.terminal_feedback }}</p>
+    </article>
+{% endblock content %}

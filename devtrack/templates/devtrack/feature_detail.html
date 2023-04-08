@@ -1,0 +1,58 @@
+{% extends "devtrack/base.html" %}
+{% block content %}
+    <h1>{{ object.category_parent }} Features</h1>
+    <article class="media content-section">
+        <div class="media-body">
+        <div class="article-metadata">
+            <small class="text-muted">{{ object.feature_date_created|date:"F d, Y"}}</small>
+            <div>
+                <h3>
+                    {% if object.bug_set.count == 0 %}
+                    <a class="btn btn-outline-success btn-sm mt-1 mb-1" href="#">resolve feature</a>
+                    {% else %}
+                    <p class="badge badge-danger mt-1 mb-1">{{ object.bug_set.count }} Issues</p>
+                    {% endif %}
+
+                    {% if object.priority == 1 %}
+                    <span class="badge badge-success mr-4 float-right">HIGH</span>
+                    {% elif object.priority == 2 %}
+                    <span class="badge badge-primary mr-4 float-right">MODERATE</span>
+                    {% elif object.priority == 3 %}
+                    <span class="badge badge-secondary mr-4 float-right">LOW</span>
+                    {% endif %}
+                </h3>
+                
+            </div>
+        </div>
+        <h2 class="article-title">{{ object.feature_name }}</h2>
+        <p class="article-content">{{ object.feature_description }}</p>
+        </div>
+    </article>
+    <h2>Issues
+        <a class="btn btn-outline-primary btn-sm float-right mt-1 mb-1" href="#">submit ticket</a>
+        <button class="btn btn-outline-secondary btn-sm mt-1 mb-1 mr-2 float-right" >select</button>
+    </h2>
+    <div class="content-section">
+        {% if object.bug_set.count == 0 %}
+        <h5>Nothing wrong yet! Keep up the good work.</h5>
+        {% else %}
+        <p class='text-muted'>
+            <ul class="list-group">
+            {% for b in object.bug_set.all %}
+                <li class="list-group-item list-group-item-light">
+                    <a class="btn btn-outline-success btn-sm float-right" href="#">close</a>
+                    <a href="{% url 'bug-detail' b.id %}">{{ b.bug_name }}</a>
+                    {% if b.severity == 1 %}
+                    <p class="badge badge-danger float-right mt-1 mb-1 mr-4">SEVERE</p>
+                    {% elif b.severity == 2 %}
+                    <p class="badge badge-warning float-right mt-1 mb-1 mr-4">MODERATE</p>
+                    {% elif b.severity == 3 %}
+                    <p class="badge badge-secondary float-right mt-1 mb-1 mr-4">WARNING</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </p>
+        {% endif %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,21 @@
+{% extends "devtrack/base.html" %}
+{% block content %}
+    <h1 class="head">devtrack homepage</h1>
+    <div class="col-md-6">
+        <div class="content-section">
+            {% if user.project_set.count > 0 %}
+            <h3>Your Projects</h3>
+            <ul class="list-group">
+                {% for p in user.project_set.all %}
+                <li class="list-group-item list-group-item-light"><a href="{% url 'project-detail' p.id %}">{{ p.title }}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <div>
+                    <h3>You have no projects</h3>
+                    <span>get started </span><a href="#">create project</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

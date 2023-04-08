@@ -1,0 +1,39 @@
+{% extends "devtrack/base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Feature Groups</h2>
+    </div>
+    <div class="col-md-4">
+        <h5><a href="{% url 'feature-create' object.id %}" class="float-right btn btn-primary btn-sm"> &#43; Add Feature</a></h5>
+    </div>
+</div>
+    <div class="row content-section">
+        <div class="col-md-12"> {{ object.project_parent }}
+            <p class='text-muted'>
+                <ul class="list-group">
+                    {% for f in object.feature_set.all  %}
+                    <li class="list-group-item list-group-item-light">
+                        {% if f.priority == 1 %}
+                        <span class="badge badge-success mr-4">HIGH</span>
+                        {% elif f.priority == 2 %}
+                        <span class="badge badge-primary mr-4">MODERATE</span>
+                        {% elif f.priority == 3 %}
+                        <span class="badge badge-secondary mr-4">LOW</span>
+                        {% endif %}
+        
+                        <a href="#" class="float-right ">remove</a>
+                        <a href="{% url 'feature-update' f.id %}" class="float-right  mr-4">update</a>
+                        <a href="{% url 'feature-detail' f.id %}">{{ f.feature_name }}</a>
+                        {% if f.bug_set.count == 0 %}
+                        <button type="submit" class="btn btn-outline-success btn-sm float-right mr-4">resolve</button>
+                        {% else %}
+                        <p class="badge badge-danger float-right mr-4 mt-1 mb-1">{{ f.bug_set.count }} Issues</p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </p>
+        </div>  
+    </div>
+{% endblock content %}

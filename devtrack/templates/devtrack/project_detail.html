@@ -1,0 +1,91 @@
+{% extends "devtrack/base.html" %}
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+        <div class="article-metadata">
+            <small class="text-muted">{{ object.date_created|date:"F d, Y"}}</small>
+        </div>
+        <h2 class="article-title">{{ object.title }}</h2>
+        <p class="article-content">{{ object.description }}</p>
+        </div>
+    </article>
+    <h2>Sprints</h2>
+    <div class="row content-section">
+        <div class="col-md-12">
+            {% if object.sprint_set.count > 0 %}
+            <ul class="list-group">
+                {% for s in object.sprint_set.all %}
+                <div class="row">
+                    <div class="col-md-8">
+                        <li class="list-group-item list-group-item-light">
+                            <div>
+                                <a href="{% url 'sprint-detail' s.id %}">{{ s.sprint_name }}</a>    
+                                <span class="badge badge-secondary">{{ s.feature_set.count }} features</span>
+                                <span class="badge badge-secondary">{{ s.get_all_progress }} in progress</span>
+                                <span class="badge badge-secondary">{{ s.get_all_resolved }} completed</span>
+                                <span class="badge badge-info">{{ s.get_all_issues }} issues</span>
+                            </div>
+                            
+                            <div class="progress mt-1">
+                                <div style="width:calc(({{ s.get_all_resolved }} / {{ s.feature_set.count }})*100%)" class="progress-bar bg-primary" role="progressbar" aria-valuenow="{{ s.get_all_resolved }}" aria-valuemax="{{ s.feature_set.count }}" ></div>   
+                            </div>
+                        </li>
+                    </div>
+                    <div class="col-md-4">
+                        <li class="list-group-item list-group-item-light">
+                            {{ s.start_date }}
+                            <span class=" ml-4 badge badge-pill badge-primary">{{ s.days }} days remaining</span>
+                            <div class="progress mt-1">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+                {% endfor %}
+            </ul>  
+            {% else %}
+            <h4 class="mr-4">You have no active sprints</h4>
+            <a class="btn btn-outline-primary float-right" href="#">Create a Sprint</a>
+            {% endif %}
+        </div>
+    </div>
+    <h2>Calendar</h2>
+    <div class="row content-section">
+        {{ object.get_context_data }}
+    </div>
+    <h2>Feature Groups</h2>
+    <div class="row content-section">
+        {% for g in object.featuregroup_set.all %}
+        <div class="col-md-6">
+            <div> <h5>{{ g.category_name }}</h5>
+                <p class='text-muted'>
+                    <ul class="list-group">
+                    {% for f in g.feature_set.all  %}
+                        <li class="list-group-item list-group-item-light">
+                            {% if f.priority == 1 %}
+                            <span class="badge badge-success mr-4">HIGH</span>
+                            {% elif f.priority == 2 %}
+                            <span class="badge badge-primary mr-4">MODERATE</span>
+                            {% elif f.priority == 3 %}
+                            <span class="badge badge-secondary mr-4">LOW</span>
+                            {% endif %}
+
+                            <a href="{% url 'feature-detail' f.id %}">{{ f.feature_name }}</a>
+                            {% if f.bug_set.count == 0 %}
+                                {% if f.resolved %}
+                                <p class="badge badge-success float-right mt-1 mb-1">resolved</p>
+                                {% else %}
+                                <a class="btn btn-outline-success btn-sm float-right mt-1 mb-1" href="#">resolve</a>
+                                {% endif %}
+                            {% else %}
+                            <p class="badge badge-danger float-right mt-1 mb-1">{{ f.bug_set.count }} Issues</p>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </p>
+            </div>
+        </div>
+        {% endfor %}  
+    </div>
+{% endblock content %}
